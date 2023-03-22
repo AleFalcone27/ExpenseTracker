@@ -1,5 +1,4 @@
 import dearpygui.dearpygui as dpg
-import tracker_fun 
 
 # generamos las categorias 
 categorias = ["Comida","Regalos","Compra Super","Ingresos"]; 
@@ -31,6 +30,22 @@ def cargar(categoria_elegida,precio_ingresado):
         print("ingresos")
         
         ingresos.append(precio_ingresado)
+        
+
+def button_callback():
+    
+    precio_ingresado = dpg.get_value(precio)
+    
+    print("PRECIO: " + precio_ingresado)
+    
+    dpg.set_value(precio, "PRECIO"); #seteamos el valor a PRECIO para preparar la siguiente carga
+    
+    categoria_elegida = dpg.get_value(categoria) # obtenemos la categoria
+
+    dpg.set_value(categoria, "CATEGORIA") #seteamos el valor a CATEGORIAS para preparar la siguiente carga
+    
+    cargar(categoria_elegida,precio_ingresado)
+
         
 
 
