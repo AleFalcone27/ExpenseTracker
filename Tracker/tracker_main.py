@@ -1,79 +1,62 @@
 import dearpygui.dearpygui as dpg
 from datetime import date
-from openpyxl import Workbook, load_workbook
+from openpyxl import load_workbook
 
 dpg.create_context() # Creamos contexto para poder acceder a la libreria 
 
-dpg.create_viewport(title='Custom Title', width=600, height=300) # Damos el nombre y medidas a la ventana
+# Archivo en el cual queremos operar
+archivo = "gastos1.xlsx"
 
-# Generamos las categorias
-categorias = ["Comida","Regalos","Compra Super","Ingresos"]
+# Cargamos el archivo 
+wb = load_workbook(archivo)
 
-# Seteamos la bandera en True
-bandera = True;
+# Agarramos la pestaña activa 
+ws = wb.active
+
+# Cuando el archio sea nuevo escribe los headings
+a1 = ws["A1"].value
+if a1 == None:
+    ws["A1"] = "FECHA"
+    ws["B1"] = "CATEGORIA"
+    ws["C1"] = "PRECIO"
+    ws["D1"] = "COMENTARIO"
+    
+
+# Categorias para el combo (se pueden añadir nuevas)
+categorias = ["Comida","Regalos","Compra Super","Ingresos","Facultad","Pc"]
 
 # Obtenemos la fecha
 fecha = date.today()
 
-
-# Realizamos la carga de datos en el excel
-def cargar(fecha,categoria_ingresada,precio_ingresado,comentario_ingresado):
-    heading = ["fecha","categoria","precio","comentario"]
-
-    bandera = True
-
-    # Cargamos el archivo 
-    wb = load_workbook("gastos.xlsx")
-
-    # Agarramos la pestaña activa 
-    ws = wb.active
-
-    # Los headers se van a escribir solo la primera vez que corra el codigo
-    while bandera == True:
-        ws.append(heading)
-        bandera = False;
-
-    # cargamos en el archivo el nuevo gasto
-    ws.append([fecha,categoria_ingresada,precio_ingresado,comentario_ingresado])
-
-    # Save the file
-    wb.save("gastos.xlsx")
-
+# Realizamos la carga en el archvio excel de los datos ingresados en nuestro programa
+def cargar():
     
-def save():
+    # Obtenemos los valores ingresados por el usuario en los ementos de nuestro programa
     precio_ingresado = dpg.get_value(precio)
     categoria_ingresada = dpg.get_value(categoria)
     comentario_ingresado = dpg.get_value(comentario)
-
-    print(precio_ingresado)
-    print(categoria_ingresada)
-    print(comentario_ingresado)
     
-    cargar(fecha,categoria_ingresada,precio_ingresado,comentario_ingresado)
-
-
-with dpg.window(label="Example Window"):
-    dpg.add_text("Hello, world")
-    dpg.add_button(label="Save", callback= save,)
+    # cargamos en el archivo el nuevo gasto
+    ws.append([fecha,categoria_ingresada,int(precio_ingresado),comentario_ingresado])   
     
+    # Guardamos los cambios
+    wb.save(archivo)
+    
+    
+    
+with dpg.window(tag="Primary Window"): # Nombre de nuestra ventana
+    dpg.add_text("Vamos a ver si ahora llegas a fin de mes")
+
+    # Creamos los elementos de nuestro programa
     precio = dpg.add_input_text(label="PRECIO",tag=1); # Cramos input del precio
-    
     categoria = dpg.add_combo(categorias, tag=2, label="CATEGORIAS"); # Creamos categoria del gasto
-    
     comentario = dpg.add_input_text(label="COMENTARIO", tag=3) # Creamos input del comentario
-    
-    
+    dpg.add_button(label="Save", callback= cargar,) # Al presionar el boton llamamos a la funcion encargada de guardar los datos en la planilla
 
-
-
-
-
-
-
-
+dpg.create_viewport(title='Expenses Tracer ', width = 600, height = 300) # Damos el nombre y medidas a la ventana
 dpg.setup_dearpygui() 
 dpg.show_viewport() # Mostramos la ventana grafica
+dpg.set_primary_window("Primary Window", True)
 dpg.start_dearpygui() # Comienza el bucle de renderizado
-
 dpg.destroy_context() # Destruimos el contexto
 
