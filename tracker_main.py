@@ -1,24 +1,20 @@
 # Importamos bibliotecas
 import dearpygui.dearpygui as dpg
 from datetime import date
-from tracker_func import *
 
 def main():
     
     # Creamos contexto para poder acceder a la libreria 
     dpg.create_context() 
 
-
+    # Funcion para formatear la linea para caragarla de correctamente en el CVS 
     def line_to_csv(archivo:str,col_1:str, col_2:str ,col_3:str ,col4:str):
 
-        """
-        Esta funcion se encarga de formatear la linea para caragarla de correctamente en el CVS 
-        """
         with open(archivo,"a+") as registro:
                 registro.write(str(col_1) + "," + col_2 + "," + col_3 + "," + col4 + "\n")
 
     # Archivo en el cual queremos operar
-    archivo = "gastos.xlsl"
+    archivo = "gastos1.xlsx"
 
     # Categorias para el combo de nuestro programa (se pueden añadir nuevas)
     categorias_combo = ["Comida","Regalos","Compra Super","Ingresos","Facultad","Pc"]
